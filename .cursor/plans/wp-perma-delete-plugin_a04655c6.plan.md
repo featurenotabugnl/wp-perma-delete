@@ -4,22 +4,22 @@ overview: Implement the wp-perma-delete WordPress plugin that replaces Trash wit
 todos:
   - id: inspect-plugin-structure
     content: Inspect existing wp-perma-delete plugin structure and index.php bootstrap file.
-    status: pending
+    status: completed
   - id: setup-php-bootstrap
     content: Add/adjust plugin header, textdomain loading, and admin script enqueue in index.php following WordPress coding standards.
-    status: pending
+    status: completed
   - id: implement-js-behavior
     content: Implement Alt-key-based Trash-to-Delete-Permanently behavior in wp-perma-delete.js for post list and edit screens.
-    status: pending
+    status: completed
   - id: ensure-bulk-delete-option
     content: Ensure Delete Permanently is always available in bulk actions dropdowns for relevant post types.
-    status: pending
+    status: completed
   - id: finalize-i18n
     content: Audit and finalize all translatable strings in PHP and JS with a consistent textdomain.
-    status: pending
+    status: completed
   - id: test-and-document
     content: Test behavior across post types and update README with usage and feature description.
-    status: pending
+    status: completed
 isProject: false
 ---
 
