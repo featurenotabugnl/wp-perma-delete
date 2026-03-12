@@ -41,12 +41,6 @@ function wp_perma_delete_admin_enqueue_scripts( $hook_suffix ) {
 		return;
 	}
 
-	$screen = get_current_screen();
-
-	if ( ! $screen || 'edit.php' === $hook_suffix && 'trash' === $screen->post_type ) {
-		// Bail early if screen data is not available.
-	}
-
 	$script_handle = 'wp-perma-delete';
 	$script_path   = plugin_dir_path( __FILE__ ) . 'wp-perma-delete.js';
 	$script_url    = plugin_dir_url( __FILE__ ) . 'wp-perma-delete.js';
@@ -64,10 +58,10 @@ function wp_perma_delete_admin_enqueue_scripts( $hook_suffix ) {
 		$script_handle,
 		'wpPermaDelete',
 		array(
-			'altDeleteLabel'       => __( 'Delete permanently', 'wp-perma-delete' ),
-			'trashLabel'           => __( 'Trash', 'wp-perma-delete' ),
-			'altDeleteBulkLabel'   => __( 'Delete permanently', 'wp-perma-delete' ),
-			'bulkDeleteOptionValue'=> 'delete_permanently',
+			'altDeleteLabel'        => __( 'Delete permanently', 'wp-perma-delete' ),
+			'trashLabel'            => __( 'Trash', 'wp-perma-delete' ),
+			'altDeleteBulkLabel'    => __( 'Delete permanently', 'wp-perma-delete' ),
+			'bulkDeleteOptionValue' => 'delete',
 		)
 	);
 }

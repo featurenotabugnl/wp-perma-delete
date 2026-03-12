@@ -6,42 +6,68 @@
 	var isAltPressed = false;
 
 	function setAltState( event ) {
-		isAltPressed = event.altKey;
+		isAltPressed = !! event.altKey;
+	}
+
+	function refreshCurrentContext() {
+		$( '#the-list tr' ).each( function () {
+			var $row = $( this );
+
+			if ( $row.is( ':hover' ) ) {
+				toggleRowActions( $row );
+			}
+		} );
+
+		toggleEditScreenLink();
 	}
 
 	function handleKeyDown( event ) {
 		if ( event.altKey ) {
 			isAltPressed = true;
+			refreshCurrentContext();
 		}
 	}
 
 	function handleKeyUp( event ) {
 		if ( ! event.altKey ) {
 			isAltPressed = false;
+			refreshCurrentContext();
 		}
+	}
+
+	function buildPermanentHrefFromTrash( href ) {
+		if ( ! href ) {
+			return href;
+		}
+
+		if ( href.indexOf( 'action=trash' ) === -1 ) {
+			return href;
+		}
+
+		return href.replace( 'action=trash', 'action=delete' );
 	}
 
 	function toggleRowActions( $row ) {
 		var $trashLink = $row.find( '.row-actions .trash a' );
-		var $deleteLink = $row.find( '.row-actions .delete a' );
 
-		if ( ! $trashLink.length || ! $deleteLink.length ) {
+		if ( ! $trashLink.length ) {
 			return;
 		}
 
-		if ( isAltPressed ) {
+		if ( ! $trashLink.data( 'originalHref' ) ) {
 			$trashLink.data( 'originalHref', $trashLink.attr( 'href' ) );
+		}
+
+		if ( ! $trashLink.data( 'originalText' ) ) {
 			$trashLink.data( 'originalText', $trashLink.text() );
-			$trashLink.attr( 'href', $deleteLink.attr( 'href' ) );
+		}
+
+		if ( isAltPressed ) {
+			$trashLink.attr( 'href', buildPermanentHrefFromTrash( $trashLink.data( 'originalHref' ) ) );
 			$trashLink.text( wpPermaDelete.altDeleteLabel );
 		} else {
-			if ( $trashLink.data( 'originalHref' ) ) {
-				$trashLink.attr( 'href', $trashLink.data( 'originalHref' ) );
-			}
-
-			if ( $trashLink.data( 'originalText' ) ) {
-				$trashLink.text( $trashLink.data( 'originalText' ) );
-			}
+			$trashLink.attr( 'href', $trashLink.data( 'originalHref' ) );
+			$trashLink.text( $trashLink.data( 'originalText' ) );
 		}
 	}
 
@@ -56,6 +82,8 @@
 			} );
 
 			$row.on( 'mouseleave.wpPermaDelete focusout.wpPermaDelete', function () {
+				// On leave, always restore original state.
+				isAltPressed = false;
 				toggleRowActions( $row );
 			} );
 		} );
@@ -71,19 +99,20 @@
 
 		var $link = $submitDelete.length ? $submitDelete : $permalinkTrash;
 
-		if ( isAltPressed ) {
+		if ( ! $link.data( 'originalHref' ) ) {
 			$link.data( 'originalHref', $link.attr( 'href' ) );
+		}
+
+		if ( ! $link.data( 'originalText' ) ) {
 			$link.data( 'originalText', $link.text() );
-			$link.attr( 'href', $link.attr( 'href' ).replace( 'action=trash', 'action=delete' ) );
+		}
+
+		if ( isAltPressed ) {
+			$link.attr( 'href', buildPermanentHrefFromTrash( $link.data( 'originalHref' ) ) );
 			$link.text( wpPermaDelete.altDeleteLabel );
 		} else {
-			if ( $link.data( 'originalHref' ) ) {
-				$link.attr( 'href', $link.data( 'originalHref' ) );
-			}
-
-			if ( $link.data( 'originalText' ) ) {
-				$link.text( $link.data( 'originalText' ) );
-			}
+			$link.attr( 'href', $link.data( 'originalHref' ) );
+			$link.text( $link.data( 'originalText' ) );
 		}
 	}
 
