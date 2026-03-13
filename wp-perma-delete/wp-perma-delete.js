@@ -102,7 +102,7 @@
 		// Make perma-delete link
 		if ( is_alt_pressed ) {
 			$trash_link.attr( 'href', compile_perma_delete_url( $trash_link.data( 'original_href' ) ) );
-			$trash_link.text( wp_perma_delete.perma_delete_label_singular );
+			$trash_link.text( wp_perma_delete.perma_delete_label );
 		}
 
 		// Revert trash link
@@ -160,7 +160,7 @@
 
 			// Add the option
 			$select.append(
-				$( '<option value="delete">' + wp_perma_delete.perma_delete_label_plural + '</option>' )
+				$( '<option value="delete">' + wp_perma_delete.perma_delete_label + '</option>' )
 			);
 
 		} );
@@ -194,7 +194,7 @@
 		// Make perma-delete link
 		if ( is_alt_pressed ) {
 			$link.attr( 'href', compile_perma_delete_url( $link.data( 'original_href' ) ) );
-			$link.text( wp_perma_delete.perma_delete_label_singular );
+			$link.text( wp_perma_delete.perma_delete_label );
 		}
 
 		// Revert trash link
