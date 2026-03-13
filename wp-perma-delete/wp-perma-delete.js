@@ -1,41 +1,70 @@
 /* global jQuery, wp_perma_delete */
 
-( function ( $ ) {
+( function( $ ) {
+
 	'use strict';
 
-	var isAltPressed = false;
+	// Wether the alt-key (opt/alt key on mac) is currently pressed.
+	var is_alt_pressed = false;
 
-	function setAltState( event ) {
-		isAltPressed = !! event.altKey;
-	}
+	/**
+	 * Refresh the current link state (post table + edit screen).
+	 *
+	 * @returns {void}
+	 */
+	function refresh_current_state() {
 
-	function refreshCurrentContext() {
-		$( '#the-list tr' ).each( function () {
+		// Check each table row
+		$( '#the-list tr' ).each( function() {
 			var $row = $( this );
-
 			if ( $row.is( ':hover' ) ) {
-				toggleRowActions( $row );
+				toggle_row_actions( $row );
 			}
 		} );
 
-		toggleEditScreenLink();
+		// The post edit screen
+		toggle_edit_screen_link();
+
 	}
 
-	function handleKeyDown( event ) {
+	/**
+	 * When alt/opt is pressed, swap the trash link with the perma-delete link.
+	 *
+	 * @param {KeyboardEvent} event Key event.
+	 * @returns {void}
+	 */
+	function key_down( event ) {
+
 		if ( event.altKey ) {
-			isAltPressed = true;
-			refreshCurrentContext();
+			is_alt_pressed = true;
+			refresh_current_state();
 		}
+
 	}
 
-	function handleKeyUp( event ) {
+	/**
+	 * When alt/opt is released, restore the original trash link.
+	 *
+	 * @param {KeyboardEvent} event Key event.
+	 * @returns {void}
+	 */
+	function key_up( event ) {
+
 		if ( ! event.altKey ) {
-			isAltPressed = false;
-			refreshCurrentContext();
+			is_alt_pressed = false;
+			refresh_current_state();
 		}
+
 	}
 
-	function buildPermanentHrefFromTrash( href ) {
+	/**
+	 * Convert "trash" URL to "perma-delete" URL.
+	 *
+	 * @param {string} href Original href.
+	 * @returns {string} Updated href (or original when unchanged).
+	 */
+	function compile_perma_delete_url( href ) {
+
 		if ( ! href ) {
 			return href;
 		}
@@ -45,110 +74,163 @@
 		}
 
 		return href.replace( 'action=trash', 'action=delete' );
+
 	}
 
-	function toggleRowActions( $row ) {
-		var $trashLink = $row.find( '.row-actions .trash a' );
+	/**
+	 * Toggle table row's trash and perma-delete link.
+	 *
+	 * @param {jQuery} $row Row element.
+	 * @returns {void}
+	 */
+	function toggle_row_actions( $row ) {
 
-		if ( ! $trashLink.length ) {
+		var $trash_link = $row.find( '.row-actions .trash a' );
+
+		if ( ! $trash_link.length ) {
 			return;
 		}
 
-		if ( ! $trashLink.data( 'originalHref' ) ) {
-			$trashLink.data( 'originalHref', $trashLink.attr( 'href' ) );
+		// Save the original link/label
+		if ( ! $trash_link.data( 'original_href' ) ) {
+			$trash_link.data( 'original_href', $trash_link.attr( 'href' ) );
+		}
+		if ( ! $trash_link.data( 'original_label' ) ) {
+			$trash_link.data( 'original_label', $trash_link.text() );
 		}
 
-		if ( ! $trashLink.data( 'originalText' ) ) {
-			$trashLink.data( 'originalText', $trashLink.text() );
+		// Make perma-delete link
+		if ( is_alt_pressed ) {
+			$trash_link.attr( 'href', compile_perma_delete_url( $trash_link.data( 'original_href' ) ) );
+			$trash_link.text( wp_perma_delete.perma_delete_label_singular );
 		}
 
-		if ( isAltPressed ) {
-			$trashLink.attr( 'href', buildPermanentHrefFromTrash( $trashLink.data( 'originalHref' ) ) );
-			$trashLink.text( wp_perma_delete.perma_delete_label_singular );
-		} else {
-			$trashLink.attr( 'href', $trashLink.data( 'originalHref' ) );
-			$trashLink.text( $trashLink.data( 'originalText' ) );
+		// Revert trash link
+		else {
+			$trash_link.attr( 'href', $trash_link.data( 'original_href' ) );
+			$trash_link.text( $trash_link.data( 'original_label' ) );
 		}
+
 	}
 
-	function bindRowActions() {
-		$( '#the-list tr' ).each( function () {
+	/**
+	 * Bind hover/focus handlers for all table rows.
+	 *
+	 * @returns {void}
+	 */
+	function bind_row_actions() {
+
+		$( '#the-list tr' ).each( function() {
+
 			var $row = $( this );
 
+			// Unbind existing in case of re-binding
 			$row.off( 'mouseenter.wp_perma_delete mouseleave.wp_perma_delete focusin.wp_perma_delete focusout.wp_perma_delete' );
 
-			$row.on( 'mouseenter.wp_perma_delete focusin.wp_perma_delete', function () {
-				toggleRowActions( $row );
+			// On hover
+			$row.on( 'mouseenter.wp_perma_delete focusin.wp_perma_delete', function() {
+				toggle_row_actions( $row );
 			} );
 
-			$row.on( 'mouseleave.wp_perma_delete focusout.wp_perma_delete', function () {
-				// On leave, always restore original state.
-				isAltPressed = false;
-				toggleRowActions( $row );
+			// On hover-away
+			$row.on( 'mouseleave.wp_perma_delete focusout.wp_perma_delete', function() {
+				is_alt_pressed = false;
+				toggle_row_actions( $row );
 			} );
+
 		} );
+
 	}
 
-	function toggleEditScreenLink() {
-		var $submitDelete = $( '#submitdelete' );
-		var $permalinkTrash = $( '.submitbox .misc-pub-section .trash a' );
+	/**
+	 * Make sure the table bulk actions dropdown includes a perma-delete option.
+	 *
+	 * @returns {void}
+	 */
+	function add_bulk_perma_delete_option() {
 
-		if ( ! $submitDelete.length && ! $permalinkTrash.length ) {
-			return;
-		}
+		$( 'select[name="action"], select[name="action2"]' ).each( function() {
 
-		var $link = $submitDelete.length ? $submitDelete : $permalinkTrash;
-
-		if ( ! $link.data( 'originalHref' ) ) {
-			$link.data( 'originalHref', $link.attr( 'href' ) );
-		}
-
-		if ( ! $link.data( 'originalText' ) ) {
-			$link.data( 'originalText', $link.text() );
-		}
-
-		if ( isAltPressed ) {
-			$link.attr( 'href', buildPermanentHrefFromTrash( $link.data( 'originalHref' ) ) );
-			$link.text( wp_perma_delete.perma_delete_label_singular );
-		} else {
-			$link.attr( 'href', $link.data( 'originalHref' ) );
-			$link.text( $link.data( 'originalText' ) );
-		}
-	}
-
-	function ensureBulkDeleteOption() {
-		var optionValue = 'delete';
-		var label = wp_perma_delete.perma_delete_label_plural;
-
-		$( 'select[name="action"], select[name="action2"]' ).each( function () {
 			var $select = $( this );
 
-			if ( $select.find( 'option[value="' + optionValue + '"]' ).length ) {
+			// Already added
+			if ( $select.find( 'option[value="delete"]' ).length ) {
 				return;
 			}
 
+			// Add the option
 			$select.append(
-				$( '<option></option>' )
-					.val( optionValue )
-					.text( label )
+				$( '<option value="delete">' + wp_perma_delete.perma_delete_label_plural + '</option>' )
 			);
+
 		} );
+
 	}
 
+	/**
+	 * Toggle the edit screen trash and perma-delete link.
+	 *
+	 * @returns {void}
+	 */
+	function toggle_edit_screen_link() {
+
+		var $submit_delete = $( '#submitdelete' );
+		var $permalink_trash = $( '.submitbox .misc-pub-section .trash a' );
+
+		if ( ! $submit_delete.length && ! $permalink_trash.length ) {
+			return;
+		}
+
+		var $link = $submit_delete.length ? $submit_delete : $permalink_trash;
+
+		// Save the original link/label
+		if ( ! $link.data( 'original_href' ) ) {
+			$link.data( 'original_href', $link.attr( 'href' ) );
+		}
+		if ( ! $link.data( 'original_label' ) ) {
+			$link.data( 'original_label', $link.text() );
+		}
+
+		// Make perma-delete link
+		if ( is_alt_pressed ) {
+			$link.attr( 'href', compile_perma_delete_url( $link.data( 'original_href' ) ) );
+			$link.text( wp_perma_delete.perma_delete_label_singular );
+		}
+
+		// Revert trash link
+		else {
+			$link.attr( 'href', $link.data( 'original_href' ) );
+			$link.text( $link.data( 'original_label' ) );
+		}
+
+	}
+
+	/**
+	 * Initialize events.
+	 *
+	 * @returns {void}
+	 */
 	function init() {
-		$( document ).on( 'keydown.wp_perma_delete', handleKeyDown );
-		$( document ).on( 'keyup.wp_perma_delete', handleKeyUp );
 
-		bindRowActions();
-		toggleEditScreenLink();
-		ensureBulkDeleteOption();
+		// Key-press events.
+		$( document ).on( 'keydown.wp_perma_delete', key_down );
+		$( document ).on( 'keyup.wp_perma_delete', key_up );
 
-		$( document ).ajaxComplete( function () {
-			bindRowActions();
-			ensureBulkDeleteOption();
+		// Initial events and states
+		bind_row_actions();
+		add_bulk_perma_delete_option();
+		toggle_edit_screen_link();
+
+		// Re-bind on ajax changes
+		$( document ).ajaxComplete( function() {
+			bind_row_actions();
+			add_bulk_perma_delete_option();
 		} );
+
 	}
 
+	// One-time initialization.
 	$( init );
+
 }( jQuery ) );
 
