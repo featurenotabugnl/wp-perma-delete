@@ -1,4 +1,4 @@
-/* global jQuery, wpPermaDelete */
+/* global jQuery, wp_perma_delete */
 
 ( function ( $ ) {
 	'use strict';
@@ -64,7 +64,7 @@
 
 		if ( isAltPressed ) {
 			$trashLink.attr( 'href', buildPermanentHrefFromTrash( $trashLink.data( 'originalHref' ) ) );
-			$trashLink.text( wpPermaDelete.altDeleteLabel );
+			$trashLink.text( wp_perma_delete.perma_delete_label_singular );
 		} else {
 			$trashLink.attr( 'href', $trashLink.data( 'originalHref' ) );
 			$trashLink.text( $trashLink.data( 'originalText' ) );
@@ -75,13 +75,13 @@
 		$( '#the-list tr' ).each( function () {
 			var $row = $( this );
 
-			$row.off( 'mouseenter.wpPermaDelete mouseleave.wpPermaDelete focusin.wpPermaDelete focusout.wpPermaDelete' );
+			$row.off( 'mouseenter.wp_perma_delete mouseleave.wp_perma_delete focusin.wp_perma_delete focusout.wp_perma_delete' );
 
-			$row.on( 'mouseenter.wpPermaDelete focusin.wpPermaDelete', function () {
+			$row.on( 'mouseenter.wp_perma_delete focusin.wp_perma_delete', function () {
 				toggleRowActions( $row );
 			} );
 
-			$row.on( 'mouseleave.wpPermaDelete focusout.wpPermaDelete', function () {
+			$row.on( 'mouseleave.wp_perma_delete focusout.wp_perma_delete', function () {
 				// On leave, always restore original state.
 				isAltPressed = false;
 				toggleRowActions( $row );
@@ -109,7 +109,7 @@
 
 		if ( isAltPressed ) {
 			$link.attr( 'href', buildPermanentHrefFromTrash( $link.data( 'originalHref' ) ) );
-			$link.text( wpPermaDelete.altDeleteLabel );
+			$link.text( wp_perma_delete.perma_delete_label_singular );
 		} else {
 			$link.attr( 'href', $link.data( 'originalHref' ) );
 			$link.text( $link.data( 'originalText' ) );
@@ -117,8 +117,8 @@
 	}
 
 	function ensureBulkDeleteOption() {
-		var optionValue = wpPermaDelete.bulkDeleteOptionValue;
-		var label = wpPermaDelete.altDeleteBulkLabel;
+		var optionValue = 'delete';
+		var label = wp_perma_delete.perma_delete_label_plural;
 
 		$( 'select[name="action"], select[name="action2"]' ).each( function () {
 			var $select = $( this );
@@ -136,8 +136,8 @@
 	}
 
 	function init() {
-		$( document ).on( 'keydown.wpPermaDelete', handleKeyDown );
-		$( document ).on( 'keyup.wpPermaDelete', handleKeyUp );
+		$( document ).on( 'keydown.wp_perma_delete', handleKeyDown );
+		$( document ).on( 'keyup.wp_perma_delete', handleKeyUp );
 
 		bindRowActions();
 		toggleEditScreenLink();
