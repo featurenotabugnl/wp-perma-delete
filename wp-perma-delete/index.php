@@ -4,7 +4,7 @@
  * Plugin URI: https://featurenotabug.nl/wp-perma-delete
  * Description: Permanently delete posts, pages, and other content from WordPress instead of moving them to the trash.
  * Version: 1.0.0
- * Author: featurenotabug.
+ * Author: Berend de Jong @ featurenotabug.
  * Author URI: https://featurenotabug.nl
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -32,7 +32,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-$plugin_data = get_file_data( __FILE__ );
+$plugin_data = get_file_data( __FILE__, array( 'Version' ) );
 define( 'WP_PERMA_DELETE_PLUGIN_SLUG', 'wp-perma-delete' );
 define( 'WP_PERMA_DELETE_PLUGIN_SLUG_', 'wp_perma_delete' );
 define( 'WP_PERMA_DELETE_VERSION', $plugin_data['Version'] ?? null );
