@@ -29,10 +29,7 @@ services:
       - "8000:80"
     volumes:
       - wp_data:/var/www/html
-      # Mount local wp-perma-delete project as an mu-plugin
-      - ./wp-perma-delete:/var/www/html/wp-content/plugins/wp-perma-delete
-    # Uncomment if you want to mount only wp-content into the host
-    #  - ./wp-content:/var/www/html/wp-content
+      - ./maybe-perma-delete:/var/www/html/wp-content/plugins/maybe-perma-delete
 
 volumes:
   db_data:

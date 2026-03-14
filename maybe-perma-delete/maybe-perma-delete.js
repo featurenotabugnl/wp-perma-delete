@@ -1,4 +1,4 @@
-/* global jQuery, wp_perma_delete */
+/* global jQuery, maybe_perma_delete */
 
 ( function( $ ) {
 
@@ -102,7 +102,7 @@
 		// Make perma-delete link
 		if ( is_alt_pressed ) {
 			$trash_link.attr( 'href', compile_perma_delete_url( $trash_link.data( 'original_href' ) ) );
-			$trash_link.text( wp_perma_delete.perma_delete_label );
+			$trash_link.text( maybe_perma_delete.perma_delete_label );
 		}
 
 		// Revert trash link
@@ -125,15 +125,15 @@
 			var $row = $( this );
 
 			// Unbind existing in case of re-binding
-			$row.off( 'mouseenter.wp_perma_delete mouseleave.wp_perma_delete focusin.wp_perma_delete focusout.wp_perma_delete' );
+			$row.off( 'mouseenter.maybe_perma_delete mouseleave.maybe_perma_delete focusin.maybe_perma_delete focusout.maybe_perma_delete' );
 
 			// On hover
-			$row.on( 'mouseenter.wp_perma_delete focusin.wp_perma_delete', function() {
+			$row.on( 'mouseenter.maybe_perma_delete focusin.maybe_perma_delete', function() {
 				toggle_row_actions( $row );
 			} );
 
 			// On hover-away
-			$row.on( 'mouseleave.wp_perma_delete focusout.wp_perma_delete', function() {
+			$row.on( 'mouseleave.maybe_perma_delete focusout.maybe_perma_delete', function() {
 				is_alt_pressed = false;
 				toggle_row_actions( $row );
 			} );
@@ -160,7 +160,7 @@
 
 			// Add the option
 			$select.append(
-				$( '<option value="delete">' + wp_perma_delete.perma_delete_label + '</option>' )
+				$( '<option value="delete">' + maybe_perma_delete.perma_delete_label + '</option>' )
 			);
 
 		} );
@@ -194,7 +194,7 @@
 		// Make perma-delete link
 		if ( is_alt_pressed ) {
 			$link.attr( 'href', compile_perma_delete_url( $link.data( 'original_href' ) ) );
-			$link.text( wp_perma_delete.perma_delete_label );
+			$link.text( maybe_perma_delete.perma_delete_label );
 		}
 
 		// Revert trash link
@@ -213,8 +213,8 @@
 	function init() {
 
 		// Key-press events.
-		$( document ).on( 'keydown.wp_perma_delete', key_down );
-		$( document ).on( 'keyup.wp_perma_delete', key_up );
+		$( document ).on( 'keydown.maybe_perma_delete', key_down );
+		$( document ).on( 'keyup.maybe_perma_delete', key_up );
 
 		// Initial events and states
 		bind_row_actions();

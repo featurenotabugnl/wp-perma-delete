@@ -1,15 +1,15 @@
 ---
-name: wp-perma-delete-plugin
-overview: Implement the wp-perma-delete WordPress plugin that replaces Trash with Delete Permanently when Alt is held, using only index.php and wp-perma-delete.js, following WordPress coding standards and supporting translation.
+name: maybe-perma-delete-plugin
+overview: Implement the maybe-perma-delete WordPress plugin that replaces Trash with Delete Permanently when Alt is held, using only index.php and maybe-perma-delete.js, following WordPress coding standards and supporting translation.
 todos:
   - id: inspect-plugin-structure
-    content: Inspect existing wp-perma-delete plugin structure and index.php bootstrap file.
+    content: Inspect existing maybe-perma-delete plugin structure and index.php bootstrap file.
     status: completed
   - id: setup-php-bootstrap
     content: Add/adjust plugin header, textdomain loading, and admin script enqueue in index.php following WordPress coding standards.
     status: completed
   - id: implement-js-behavior
-    content: Implement Alt-key-based Trash-to-Delete-Permanently behavior in wp-perma-delete.js for post list and edit screens.
+    content: Implement Alt-key-based Trash-to-Delete-Permanently behavior in maybe-perma-delete.js for post list and edit screens.
     status: completed
   - id: ensure-bulk-delete-option
     content: Ensure Delete Permanently is always available in bulk actions dropdowns for relevant post types.
@@ -23,23 +23,23 @@ todos:
 isProject: false
 ---
 
-## wp-perma-delete Plugin Implementation Plan
+## Maybe Perma Delete Plugin Implementation Plan
 
 ### 1. Understand environment & plugin structure
 
-- **Review plugin folder**: Inspect `[wp-perma-delete/index.php](wp-perma-delete/index.php)` and overall plugin directory to confirm headers, plugin activation hooks, and current enqueue logic (if any).
+- **Review plugin folder**: Inspect `[maybe-perma-delete/index.php](maybe-perma-delete/index.php)` and overall plugin directory to confirm headers, plugin activation hooks, and current enqueue logic (if any).
 - **Confirm admin-only scope**: Ensure the plugin is intended to affect only the WordPress admin UI (post list table and post edit screen).
 
 ### 2. PHP: Core plugin bootstrap (`index.php`)
 
 - **Add plugin header & i18n setup**: Ensure `index.php` has a standard WordPress plugin header and loads the plugin textdomain using `load_plugin_textdomain()` so strings are translatable.
 - **Enqueue admin script**:
-  - Hook into `admin_enqueue_scripts` to enqueue `wp-perma-delete.js` only on admin screens.
+  - Hook into `admin_enqueue_scripts` to enqueue `maybe-perma-delete.js` only on admin screens.
   - Restrict loading to post list (`edit.php`) and post edit (`post.php`, `post-new.php`) screens where trash is enabled.
   - Use `wp_enqueue_script()` with versioning (e.g. `filemtime`) and proper dependencies (e.g. `jquery`) and localize any needed data or translated strings via `wp_localize_script()`.
 - **Ensure coding standards**: Write all PHP following WordPress coding standards (spacing, naming, escaping, hooks placement) and run it through a PHPCS WordPress ruleset if available.
 
-### 3. JavaScript: Admin behavior (`wp-perma-delete.js`)
+### 3. JavaScript: Admin behavior (`maybe-perma-delete.js`)
 
 - **General approach**: Implement behavior using vanilla JS or jQuery (consistent with WordPress admin), ensuring it runs after the admin DOM is ready and works across browsers on Windows, macOS, and Linux.
 - **Alt-hover link in post table**:
@@ -61,7 +61,7 @@ isProject: false
 ### 4. Internationalization (i18n)
 
 - **Translatable strings**:
-  - Wrap all user-facing strings in PHP using `__()`, `_e()`, or related functions with a consistent textdomain (e.g. `wp-perma-delete`).
+  - Wrap all user-facing strings in PHP using `__()`, `_e()`, or related functions with a consistent textdomain (e.g. `maybe-perma-delete`).
   - If strings are used in JS, pass them via `wp_localize_script()` so translations are respected.
 - **Textdomain alignment**:
   - Match the textdomain to the plugin slug and ensure future `.pot` generation will pick up all strings.

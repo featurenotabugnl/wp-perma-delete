@@ -1,24 +1,24 @@
 <?php
 /**
- * Plugin Name: WP Perma Delete
- * Plugin URI: https://featurenotabug.nl/wp-perma-delete
- * Description: Permanently delete posts, pages, and other content from WordPress instead of moving them to the trash.
+ * Plugin Name: Maybe Perma Delete
+ * Plugin URI: https://featurenotabug.nl/maybe-perma-delete
+ * Description: Hold alt to permanently delete posts, pages, and other content instead of moving them to the trash.
  * Version: 1.0.0
  * Author: Berend de Jong @ featurenotabug.
  * Author URI: https://featurenotabug.nl
  * License: GPL v2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
  *
- * @package WP_Perma_Delete
+ * @package Maybe_Perma_Delete
  */
 
 /*
-WP Perma Delete is free software: you can redistribute it and/or modify
+Maybe Perma Delete is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation, either version 2 of the License, or
 any later version.
 
-WP Perma Delete is distributed in the hope that it will be useful,
+Maybe Perma Delete is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 GNU General Public License for more details.
@@ -33,10 +33,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 $plugin_data = get_file_data( __FILE__, array( 'Version' ) );
-define( 'WP_PERMA_DELETE_PLUGIN_SLUG', 'wp-perma-delete' );
-define( 'WP_PERMA_DELETE_PLUGIN_SLUG_', 'wp_perma_delete' );
-define( 'WP_PERMA_DELETE_VERSION', $plugin_data['Version'] ?? null );
-define( 'WP_PERMA_DELETE_SCRIPT_URL', plugin_dir_url( __FILE__ ) . 'wp-perma-delete.js' );
+define( 'MAYBE_PERMA_DELETE_PLUGIN_SLUG', 'maybe-perma-delete' );
+define( 'MAYBE_PERMA_DELETE_PLUGIN_SLUG_', 'maybe_perma_delete' );
+define( 'MAYBE_PERMA_DELETE_VERSION', $plugin_data['Version'] ?? null );
+define( 'MAYBE_PERMA_DELETE_SCRIPT_URL', plugin_dir_url( __FILE__ ) . 'maybe-perma-delete.js' );
 
 /**
  * Enqueue admin script on relevant screens.
@@ -57,17 +57,17 @@ add_action( 'admin_enqueue_scripts', function( $hook_suffix ) {
 
 	// Enqueue the script.
 	wp_enqueue_script(
-		WP_PERMA_DELETE_PLUGIN_SLUG,
-		WP_PERMA_DELETE_SCRIPT_URL,
+		MAYBE_PERMA_DELETE_PLUGIN_SLUG,
+		MAYBE_PERMA_DELETE_SCRIPT_URL,
 		array( 'jquery' ),
-		WP_PERMA_DELETE_VERSION,
+		MAYBE_PERMA_DELETE_VERSION,
 		true
 	);
 
 	// Pass variables to the script.
 	wp_localize_script(
-		WP_PERMA_DELETE_PLUGIN_SLUG,
-		WP_PERMA_DELETE_PLUGIN_SLUG_,
+		MAYBE_PERMA_DELETE_PLUGIN_SLUG,
+		MAYBE_PERMA_DELETE_PLUGIN_SLUG_,
 		array(
 			'perma_delete_label' => __( 'Delete permanently', 'default' ),
 		)

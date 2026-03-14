@@ -6,7 +6,7 @@ This directory contains a basic Docker setup for running a fresh WordPress insta
 
 - `docker-compose.yml` – Defines the WordPress and MySQL containers.
 - `.env.example` – Example of environment variables used by the stack. You can copy this to `.env` and customize values.
-- `wp-perma-delete/` – WordPress plugin that modifies delete behavior in the admin.
+- `maybe-perma-delete/` – WordPress plugin that modifies delete behavior in the admin.
 
 ### Getting started
 
@@ -43,5 +43,5 @@ The `wp-perma-delete` plugin enhances the WordPress admin delete behavior:
 - **Alt-hover link on the post edit screen**: Holding Alt over the **Move to Trash** link will turn it into a **Delete permanently** action.
 - **Bulk actions**: The bulk actions dropdowns always include a **Delete permanently** option alongside the default trash behavior.
 
-All strings are translatable using the `wp-perma-delete` textdomain, and the PHP code follows the WordPress coding standards.
+All strings are translatable using the `maybe-perma-delete` textdomain, and the PHP code follows the WordPress coding standards.
 
